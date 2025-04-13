@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Install this package using `npm install uuid`
 import ChatBox from './ChatBox';
+import RouteCard from './RouteCard';
 import WeatherCard from './WeatherCard';
 import PlacesToVisitCard from './PlacesToVisitCard';
 import FlightOptionsCard from './FlightOptionsCard';
@@ -82,18 +83,21 @@ const Dashboard = () => {
       )}
       {!aiConfirmed && (
         <>
-          <h1 className="mt-5 text-5xl font-bold text-center">Welcome to Travel AI-Agent</h1>
+          <h1 className="mt-5 text-5xl font-bold text-center">Welcome to Travel Buddy AI-Agent</h1>
           <h2 className="mt-5 text-2xl font-bold text-center">Plan your trip with ease!</h2>
           <ChatBox onAiResponse={handleAiResponse} />
         </>
       )}
       {aiConfirmed && (
         <>
+          <div className="w-full mt-8">
+            <RouteCard />
+          </div>
           <div className="flex justify-center gap-8 w-full mt-8">
-            <div className="w-[40%]">
+            <div className="w-[40%] h-[400px] overflow-y-auto">
               <ItineraryCard />
             </div>
-            <div className="w-[60%] overflow-x-auto">
+            <div className="w-[60%] h-[400px] overflow-y-auto">
               <WeatherCard />
             </div>
           </div>

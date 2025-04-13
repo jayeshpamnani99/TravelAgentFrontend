@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <div className="navbar bg-black shadow-sm">
         <div className="flex-1">
-            <a className="btn btn-ghost text-xl text-white">Travel Agent</a>
+            <a className="btn btn-ghost text-xl text-white">Travel Buddy</a>
         </div>
         <div className="flex-none">
             <ul className="menu menu-horizontal px-1">

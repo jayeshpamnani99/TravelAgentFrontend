@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 const PlacesToVisitCard = () => {
   const [places, setPlaces] = useState([]);
+  const [error, setError] = useState(null); // State to track errors
 
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        //const tripId="PDjgmjgmjgmjgmhjgmjgm"
         const tripId = sessionStorage.getItem('user_id'); // Retrieve trip_id from session storage
         if (!tripId) {
           console.error('Trip ID not found in session storage.');
+          setError('Trip ID not found in session storage.');
           return;
         }
 
@@ -27,8 +28,10 @@ const PlacesToVisitCard = () => {
 
         const data = await response.json();
         setPlaces(data.places_to_visit); // Assuming the API returns the schema provided
+        setError(null); // Clear any previous errors
       } catch (err) {
         console.error('Error fetching places:', err.message);
+        setError('Something went wrong while fetching places to visit. Please try again.');
       }
     };
 
@@ -38,8 +41,13 @@ const PlacesToVisitCard = () => {
   return (
     <div className="places-to-visit-card bg-gray-100 p-4 rounded-lg shadow-md w-full mt-6">
       <h3 className="text-lg font-bold mb-4 text-center">Places to Visit</h3>
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <p>{error}</p>
+        </div>
+      )}
       <div className="flex gap-4 overflow-x-auto">
-        {places.map((place, index) => (
+        {places?.map((place, index) => (
           <div
             key={index}
             className="min-w-[300px] bg-white p-4 rounded-lg shadow-sm flex flex-col items-start"

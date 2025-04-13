@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 
 const WeatherCard = () => {
   const [weatherData, setWeatherData] = useState(null);
+  const [error, setError] = useState(null); // State to track errors
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        //const tripId="PDjgmjgmjgmjgmhjgmjgm"
         const tripId = sessionStorage.getItem('user_id'); // Retrieve trip_id from session storage
         if (!tripId) {
           console.error('Trip ID not found in session storage.');
+          setError('Trip ID not found in session storage.');
           return;
         }
 
         const response = await fetch('https://xlgwkfw9-8000.use.devtunnels.ms/api/v1/smart-weather', {
-          method: 'POST', // Change to POST request
+          method: 'POST', // Use POST request
           headers: {
             'Content-Type': 'application/json',
           },
@@ -27,13 +28,24 @@ const WeatherCard = () => {
 
         const data = await response.json();
         setWeatherData(data); // Assuming the API returns the weather data schema
+        setError(null); // Clear any previous errors
       } catch (err) {
-        console.error(err.message);
+        console.error('Error fetching weather data:', err.message);
+        setError('Something went wrong while fetching weather data. Please try again.');
       }
     };
 
     fetchWeatherData();
   }, []);
+
+  if (error) {
+    return (
+      <div className="text-center bg-red-100 text-red-700 p-4 rounded-lg">
+        <h3 className="text-lg font-bold">Error</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   if (!weatherData) {
     return <div className="text-center">Loading weather data...</div>;
@@ -78,11 +90,11 @@ const WeatherCard = () => {
       <div className="flex flex-col gap-8">
         <div>
           <h4 className="text-md font-bold mb-2 text-center">{origin_weather.city}</h4>
-          {renderWeatherRow(origin_weather.forecast)}
+          {origin_weather.forecast && renderWeatherRow(origin_weather?.forecast)}
         </div>
         <div>
           <h4 className="text-md font-bold mb-2 text-center">{destination_weather.city}</h4>
-          {renderWeatherRow(destination_weather.forecast)}
+          {destination_weather.forecast && renderWeatherRow(destination_weather?.forecast)}
         </div>
       </div>
     </div>
