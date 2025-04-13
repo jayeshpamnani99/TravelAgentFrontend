@@ -39,7 +39,7 @@ const RouteCard = () => {
   }
 
   return (
-    <div className="route-card bg-gray-100 p-4 rounded-lg shadow-md w-1/3 float-left">
+    <div className="route-card bg-gray-100 p-4 rounded-lg shadow-md float-left">
       <h3 className="text-lg font-bold mb-2">Route Information</h3>
       <p>{routeInfo.summary}</p>
     </div>

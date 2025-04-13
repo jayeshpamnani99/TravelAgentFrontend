@@ -6,6 +6,7 @@ const ChatBox = ({ onAiResponse }) => {
   ]); // Initialize with the first AI message
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // State to track errors
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -13,6 +14,7 @@ const ChatBox = ({ onAiResponse }) => {
     const tripId = sessionStorage.getItem('user_id'); // Retrieve trip ID (user ID) from session storage
     if (!tripId) {
       console.error('Trip ID not found in session storage.');
+      setError('Trip ID not found in session storage.');
       return;
     }
 
@@ -25,7 +27,8 @@ const ChatBox = ({ onAiResponse }) => {
     setMessages((prev) => [...prev, { sender: 'user', text: newMessage }]);
     setNewMessage('');
     setLoading(true);
-   
+    setError(null); // Reset error state before making the API call
+
     try {
       const response = await fetch('https://xlgwkfw9-8000.use.devtunnels.ms/api/v1/conversation', {
         method: 'POST',
@@ -45,12 +48,12 @@ const ChatBox = ({ onAiResponse }) => {
       setMessages((prev) => [...prev, { sender: 'ai', text: data.follow_up }]);
 
       // Check if the conversation is complete
-     
       if (data.is_complete) {
         onAiResponse('confirmed'); // Notify the parent component
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      setError('Something went wrong while sending your message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -58,6 +61,11 @@ const ChatBox = ({ onAiResponse }) => {
 
   return (
     <div className="m-5 w-3/4 mx-auto border border-gray-650 p-5 flex flex-col">
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <p>{error}</p>
+        </div>
+      )}
       <div className="flex flex-col gap-4 overflow-y-auto h-96">
         {messages.map((message, index) => (
           <div
